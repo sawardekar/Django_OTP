@@ -86,10 +86,10 @@ def otp_verify(request,pk):
                                         '<p>Please <a href="/otp/logout/">click here</a> to logout.</p>')
                 else:
                     return HttpResponse('User: ' + username + '\n' + 'could not be verified.' +
-                                        '<p><a href="/otp/token/">Click here to generate new token</a></P>')
+                                        '<p><a href="/otp/verify/'+str(pk)+'">Click here to generate new token</a></P>')
             else:
                 return HttpResponse('User: ' + username + ' Worng token!' +
-                                    '<p><a href="/otp/token/">Click here to generate new token</a></P>')
+                                    '<p><a href="/otp/verify/'+str(pk)+'">Click here to generate new token</a></P>')
     else:
         form = VerificationForm()
     context = {}
@@ -100,8 +100,8 @@ def otp_verify(request,pk):
 @login_required(login_url='/otp/login')
 def otp_token(request):
     user = User.objects.get_by_natural_key(request.user.username)
-    device = user.twiliosmsdevice_set.get()
-    device.generate_challenge()
+    # device = user.twiliosmsdevice_set.get()
+    # device.generate_challenge()
     return HttpResponseRedirect('/otp/verify')
     
 def otp_status(request):
@@ -112,7 +112,7 @@ def otp_status(request):
                                 '<p>Please <a href="/otp/logout/">click here</a> to logout.</p>')
         else:
             return HttpResponse(user.username + ' is not verified.' +
-                                '<p><a href="/otp/token/">Click here to generate new token</a></P>')
+                                '<p><a href="/otp/verify/'+str(user.id)+'">Click here to generate new token</a></P>')
     return HttpResponse('<p>Please <a href="/otp/login/">login</a> to check verification status.</p>')
 
 def otp_logout(request):
